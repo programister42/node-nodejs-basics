@@ -1,4 +1,5 @@
-import { stat, writeFile } from 'node:fs/promises';
+import { URL } from 'node:url';
+import { writeFile } from 'node:fs/promises';
 
 import { isExists } from '../utils/is-exists.js';
 import { FSError } from '../utils/fs-errors.js';

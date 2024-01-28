@@ -1,3 +1,4 @@
+import { URL } from 'node:url';
 import { rename as fsRename } from 'node:fs/promises';
 
 import { FSError } from '../utils/fs-errors.js';

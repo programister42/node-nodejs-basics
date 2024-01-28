@@ -1,3 +1,4 @@
+import { URL } from 'node:url';
 import { rm } from 'node:fs/promises';
 
 import { FSError } from '../utils/fs-errors.js';
