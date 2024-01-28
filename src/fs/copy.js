@@ -1,26 +1,26 @@
-import { join } from 'node:path';
+import { URL } from 'node:url';
 import { readdir, mkdir, copyFile, constants } from 'node:fs/promises';
 
 import { isExists } from '../utils/is-exists.js';
 import { FSError } from '../utils/fs-errors.js';
 
-const recursiveCopy = async (sourcePath, destinationPath) => {
-	if (await isExists(destinationPath)) {
+const recursiveCopy = async (sourceURL, destinationURL) => {
+	if (await isExists(destinationURL)) {
 		throw new FSError();
 	}
-	await mkdir(destinationPath);
+	await mkdir(destinationURL);
 
-	const dirents = await readdir(sourcePath, { withFileTypes: true });
+	const dirents = await readdir(sourceURL, { withFileTypes: true });
 	for (const dirent of dirents) {
 		if (dirent.isDirectory()) {
 			await recursiveCopy(
-				join(sourcePath, dirent.name),
-				join(destinationPath, dirent.name)
+				new URL(`${dirent.name}/`, sourceURL),
+				new URL(`${dirent.name}/`, destinationURL)
 			);
 		} else if (dirent.isFile()) {
-			copyFile(
-				join(sourcePath, dirent.name),
-				join(destinationPath, dirent.name),
+			await copyFile(
+				new URL(dirent.name, sourceURL),
+				new URL(dirent.name, destinationURL),
 				constants.COPYFILE_EXCL
 			);
 		}
@@ -28,11 +28,11 @@ const recursiveCopy = async (sourcePath, destinationPath) => {
 };
 
 const copy = async () => {
-	const sourcePath = './src/fs/files';
-	const destinationPath = './src/fs/files_copy';
+	const sourceURL = new URL('./files/', import.meta.url);
+	const destinationURL = new URL('./files_copy/', import.meta.url);
 
 	try {
-		await recursiveCopy(sourcePath, destinationPath);
+		await recursiveCopy(sourceURL, destinationURL);
 	} catch (error) {
 		throw new FSError();
 	}

@@ -4,14 +4,14 @@ import { isExists } from '../utils/is-exists.js';
 import { FSError } from '../utils/fs-errors.js';
 
 const create = async () => {
-	const filePath = './src/fs/files/fresh.txt';
+	const fileURL = new URL('./files/fresh.txt', import.meta.url);
 	const fileContent = 'I am fresh and young';
 
-	if (await isExists(filePath)) {
+	if (await isExists(fileURL)) {
 		throw new FSError();
 	}
 
-	await writeFile(filePath, fileContent);
+	await writeFile(fileURL, fileContent);
 };
 
 await create();
